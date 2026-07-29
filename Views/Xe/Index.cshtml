@@ -1,0 +1,145 @@
+@model BanXePKL_Project.Models.XeFilterViewModel
+@{
+    ViewData["Title"] = "Danh sách xe";
+}
+
+<div class="container my-4">
+    <div class="row">
+
+        <!-- ===================== SIDEBAR LỌC ===================== -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <strong>Bộ lọc tìm kiếm</strong>
+                </div>
+                <div class="card-body">
+                    <form method="get" asp-action="Index">
+
+                        <!-- Từ khoá -->
+                        <div class="mb-3">
+                            <label class="form-label">Từ khoá</label>
+                            <input type="text" name="keyword" class="form-control"
+                                   placeholder="Tên xe..." value="@Model.Keyword" />
+                        </div>
+
+                        <!-- Hãng xe -->
+                        <div class="mb-3">
+                            <label class="form-label">Hãng xe</label>
+                            <select name="hangXeId" class="form-select">
+                                <option value="">-- Tất cả --</option>
+                                @foreach (var hang in Model.DanhSachHangXe)
+                                {
+                                    <option value="@hang.HangXeId"
+                                            selected="@(Model.HangXeIdDaChon == hang.HangXeId)">
+                                        @hang.TenHang
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Danh mục -->
+                        <div class="mb-3">
+                            <label class="form-label">Danh mục</label>
+                            <select name="danhMucId" class="form-select">
+                                <option value="">-- Tất cả --</option>
+                                @foreach (var dm in Model.DanhSachDanhMuc)
+                                {
+                                    <option value="@dm.DanhMucId"
+                                            selected="@(Model.DanhMucIdDaChon == dm.DanhMucId)">
+                                        @dm.TenDanhMuc
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Khoảng giá -->
+                        <div class="mb-3">
+                            <label class="form-label">Khoảng giá (VNĐ)</label>
+                            <div class="d-flex gap-2">
+                                <input type="number" name="giaMin" class="form-control"
+                                       placeholder="Từ" value="@Model.GiaMin" />
+                                <input type="number" name="giaMax" class="form-control"
+                                       placeholder="Đến" value="@Model.GiaMax" />
+                            </div>
+                        </div>
+
+                        <!-- Sắp xếp -->
+                        <div class="mb-3">
+                            <label class="form-label">Sắp xếp theo</label>
+                            <select name="sortOrder" class="form-select">
+                                <option value="moi_nhat" selected="@(Model.SortOrder == "moi_nhat")">Mới nhất</option>
+                                <option value="gia_tang" selected="@(Model.SortOrder == "gia_tang")">Giá tăng dần</option>
+                                <option value="gia_giam" selected="@(Model.SortOrder == "gia_giam")">Giá giảm dần</option>
+                                <option value="ten_az" selected="@(Model.SortOrder == "ten_az")">Tên A-Z</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100">Áp dụng</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100 mt-2">Xoá lọc</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== DANH SÁCH XE ===================== -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Danh sách xe (@Model.TotalItems kết quả)</h4>
+            </div>
+
+            @if (!Model.DanhSachXe.Any())
+            {
+                <div class="alert alert-warning">Không tìm thấy xe phù hợp với điều kiện lọc.</div>
+            }
+            else
+            {
+                <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+                    @foreach (var xe in Model.DanhSachXe)
+                    {
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                <img src="@(xe.AnhDaiDien ?? "/images/no-image.png")"
+                                     class="card-img-top" style="height:200px;object-fit:cover;"
+                                     alt="@xe.TenXe" />
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title mb-1">@xe.TenXe</h6>
+                                    <p class="text-muted small mb-1">
+                                        @xe.HangXe?.TenHang &bull; @xe.PhanKhoi cc
+                                    </p>
+                                    <p class="fw-bold text-danger mb-2">
+                                        @xe.GiaBan.ToString("N0") đ
+                                    </p>
+                                    <a asp-action="Details" asp-route-id="@xe.XeId"
+                                       class="btn btn-outline-dark mt-auto">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- ===================== PHÂN TRANG ===================== -->
+                @if (Model.TotalPages > 1)
+                {
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            @for (int i = 1; i <= Model.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                    <a class="page-link"
+                                       asp-action="Index"
+                                       asp-route-page="@i"
+                                       asp-route-hangXeId="@Model.HangXeIdDaChon"
+                                       asp-route-danhMucId="@Model.DanhMucIdDaChon"
+                                       asp-route-giaMin="@Model.GiaMin"
+                                       asp-route-giaMax="@Model.GiaMax"
+                                       asp-route-keyword="@Model.Keyword"
+                                       asp-route-sortOrder="@Model.SortOrder">@i</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,63 @@
+@model List<BanXePKL_Project.Models.DonHang>
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+
+    string BadgeClass(string trangThai) => trangThai switch
+    {
+        "ChoXacNhan" => "bg-warning text-dark",
+        "DaXacNhan" => "bg-info text-dark",
+        "DangGiao" => "bg-primary",
+        "DaGiao" => "bg-success",
+        "DaHuy" => "bg-danger",
+        _ => "bg-secondary"
+    };
+
+    string TenTrangThai(string trangThai) => trangThai switch
+    {
+        "ChoXacNhan" => "Chờ xác nhận",
+        "DaXacNhan" => "Đã xác nhận",
+        "DangGiao" => "Đang giao",
+        "DaGiao" => "Đã giao",
+        "DaHuy" => "Đã huỷ",
+        _ => trangThai
+    };
+}
+
+<div class="container my-4">
+    <h3 class="mb-4">Lịch sử đơn hàng</h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
+    }
+    else
+    {
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var don in Model)
+                {
+                    <tr>
+                        <td>#@don.DonHangId</td>
+                        <td>@don.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td class="fw-bold text-danger">@don.TongTien.ToString("N0") đ</td>
+                        <td><span class="badge @BadgeClass(don.TrangThaiDonHang)">@TenTrangThai(don.TrangThaiDonHang)</span></td>
+                        <td>
+                            <a asp-action="ChiTiet" asp-route-id="@don.DonHangId" class="btn btn-sm btn-outline-dark">
+                                Xem chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

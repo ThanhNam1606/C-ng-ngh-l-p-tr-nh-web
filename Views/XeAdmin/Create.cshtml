@@ -1,0 +1,97 @@
+@model BanXePKL_Project.Models.XeAdminViewModel
+@{
+    ViewData["Title"] = "Thêm xe mới";
+    Layout = "_AdminLayout";
+    var dsHang = ViewBag.DanhSachHangXe as List<BanXePKL_Project.Models.HangXe>;
+    var dsDanhMuc = ViewBag.DanhSachDanhMuc as List<BanXePKL_Project.Models.DanhMuc>;
+}
+
+<h3 class="mb-4">Thêm xe mới</h3>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="card shadow-sm p-4">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Tên xe</label>
+            <input asp-for="TenXe" class="form-control" />
+            <span asp-validation-for="TenXe" class="text-danger"></span>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Hãng xe</label>
+            <select asp-for="HangXeId" class="form-select">
+                <option value="">-- Chọn --</option>
+                @foreach (var h in dsHang ?? new())
+                {
+                    <option value="@h.HangXeId">@h.TenHang</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Danh mục</label>
+            <select asp-for="DanhMucId" class="form-select">
+                <option value="">-- Chọn --</option>
+                @foreach (var d in dsDanhMuc ?? new())
+                {
+                    <option value="@d.DanhMucId">@d.TenDanhMuc</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Phân khối (cc)</label>
+            <input asp-for="PhanKhoi" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Giá bán (VNĐ)</label>
+            <input asp-for="GiaBan" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Số lượng tồn</label>
+            <input asp-for="SoLuongTon" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Năm sản xuất</label>
+            <input asp-for="NamSanXuat" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Màu sắc</label>
+        <input asp-for="MauSac" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Thông số kỹ thuật</label>
+        <textarea asp-for="ThongSoKyThuat" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mô tả</label>
+        <textarea asp-for="MoTa" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ảnh đại diện</label>
+        <input asp-for="AnhDaiDienFile" type="file" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ảnh phụ (chọn nhiều)</label>
+        <input asp-for="AnhPhuFiles" type="file" class="form-control" accept="image/*" multiple />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="TrangThai" class="form-check-input" />
+        <label class="form-check-label">Đang bán</label>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Lưu xe</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Huỷ</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

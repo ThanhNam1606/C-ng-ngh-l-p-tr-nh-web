@@ -1,0 +1,78 @@
+@model BanXePKL_Project.Models.GioHang
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    var tongTien = Model.GioHangChiTiet?.Sum(ct => ct.SoLuong * ct.Xe.GiaBan) ?? 0;
+}
+
+<div class="container my-4">
+    <h3 class="mb-4">Giỏ hàng của bạn</h3>
+
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success">@TempData["ThongBao"]</div>
+    }
+    @if (TempData["Loi"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Loi"]</div>
+    }
+
+    @if (Model.GioHangChiTiet == null || !Model.GioHangChiTiet.Any())
+    {
+        <div class="alert alert-info">
+            Giỏ hàng của bạn đang trống.
+            <a asp-controller="Xe" asp-action="Index">Tiếp tục xem xe &rarr;</a>
+        </div>
+    }
+    else
+    {
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Xe</th>
+                    <th>Đơn giá</th>
+                    <th style="width:140px;">Số lượng</th>
+                    <th>Thành tiền</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ct in Model.GioHangChiTiet)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="@(ct.Xe.AnhDaiDien ?? "/images/no-image.png")"
+                                     style="width:60px;height:60px;object-fit:cover;" class="rounded" />
+                                <span>@ct.Xe.TenXe</span>
+                            </div>
+                        </td>
+                        <td>@ct.Xe.GiaBan.ToString("N0") đ</td>
+                        <td>
+                            <form asp-action="CapNhatSoLuong" method="post" class="d-flex gap-1">
+                                <input type="hidden" name="chiTietId" value="@ct.Id" />
+                                <input type="number" name="soLuong" value="@ct.SoLuong" min="1"
+                                       max="@ct.Xe.SoLuongTon" class="form-control form-control-sm" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Cập nhật</button>
+                            </form>
+                        </td>
+                        <td class="fw-bold text-danger">@((ct.SoLuong * ct.Xe.GiaBan).ToString("N0")) đ</td>
+                        <td>
+                            <form asp-action="XoaSanPham" method="post">
+                                <input type="hidden" name="chiTietId" value="@ct.Id" />
+                                <button type="submit" class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Xoá xe này khỏi giỏ hàng?');">Xoá</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end align-items-center gap-3 mt-4">
+            <h5 class="mb-0">Tổng cộng: <span class="text-danger">@tongTien.ToString("N0") đ</span></h5>
+            <a asp-controller="DonHang" asp-action="Checkout" class="btn btn-danger btn-lg">
+                Tiến hành thanh toán
+            </a>
+        </div>
+    }
+</div>

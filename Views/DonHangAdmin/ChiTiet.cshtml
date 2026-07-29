@@ -1,0 +1,55 @@
+@model BanXePKL_Project.Models.DonHang
+@{
+    ViewData["Title"] = $"Đơn hàng #{Model.DonHangId}";
+    Layout = "_AdminLayout";
+}
+
+<h3 class="mb-4">Đơn hàng #@Model.DonHangId</h3>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <p><strong>Khách hàng:</strong> @Model.NguoiDung?.HoTen (@Model.NguoiDung?.Email)</p>
+        <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Địa chỉ giao hàng:</strong> @Model.DiaChiGiao</p>
+        <p><strong>SĐT nhận hàng:</strong> @Model.SoDienThoaiNhan</p>
+        <p><strong>Phương thức thanh toán:</strong> @Model.PhuongThucThanhToan</p>
+        <p class="mb-0"><strong>Ghi chú:</strong> @Model.GhiChu</p>
+    </div>
+</div>
+
+<table class="table align-middle mb-4">
+    <thead>
+        <tr><th>Xe</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var ct in Model.ChiTietDonHang)
+        {
+            <tr>
+                <td>@ct.Xe.TenXe</td>
+                <td>@ct.SoLuong</td>
+                <td>@ct.DonGia.ToString("N0") đ</td>
+                <td class="fw-bold text-danger">@ct.ThanhTien.ToString("N0") đ</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="3" class="text-end">Tổng cộng</th>
+            <th class="text-danger">@Model.TongTien.ToString("N0") đ</th>
+        </tr>
+    </tfoot>
+</table>
+
+<form asp-action="CapNhatTrangThai" method="post" class="d-flex gap-2" style="max-width:400px;">
+    <input type="hidden" name="donHangId" value="@Model.DonHangId" />
+    <select name="trangThaiMoi" class="form-select">
+        <option value="ChoXacNhan" selected="@(Model.TrangThaiDonHang == "ChoXacNhan")">Chờ xác nhận</option>
+        <option value="DaXacNhan" selected="@(Model.TrangThaiDonHang == "DaXacNhan")">Đã xác nhận</option>
+        <option value="DangGiao" selected="@(Model.TrangThaiDonHang == "DangGiao")">Đang giao</option>
+        <option value="DaGiao" selected="@(Model.TrangThaiDonHang == "DaGiao")">Đã giao</option>
+        <option value="DaHuy" selected="@(Model.TrangThaiDonHang == "DaHuy")">Đã huỷ</option>
+    </select>
+    <button type="submit" class="btn btn-danger">Cập nhật trạng thái</button>
+</form>
+
+<a asp-action="Index" class="btn btn-secondary mt-4">&larr; Quay lại danh sách</a>

@@ -1,0 +1,34 @@
+@* Đặt file này trong Views/Shared, gọi bằng <partial name="_LoginPartial" /> trong _Layout.cshtml *@
+
+@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                Xin chào, @User.Identity.Name
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" asp-controller="TaiKhoan" asp-action="ThongTin">Thông tin cá nhân</a></li>
+                <li><a class="dropdown-item" asp-controller="DonHang" asp-action="LichSu">Đơn hàng của tôi</a></li>
+                <li><a class="dropdown-item" asp-controller="GioHang" asp-action="Index">Giỏ hàng</a></li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a class="dropdown-item" asp-controller="AdminDashboard" asp-action="Index">Trang quản trị</a></li>
+                }
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                    <form asp-controller="TaiKhoan" asp-action="DangXuat" method="post">
+                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link text-white" asp-controller="TaiKhoan" asp-action="DangNhap">Đăng nhập</a></li>
+        <li class="nav-item"><a class="nav-link text-white" asp-controller="TaiKhoan" asp-action="DangKy">Đăng ký</a></li>
+    </ul>
+}

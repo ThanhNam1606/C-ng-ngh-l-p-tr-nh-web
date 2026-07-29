@@ -1,0 +1,90 @@
+@model BanXePKL_Project.Models.DatHangViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container my-4">
+    <h3 class="mb-4">Xác nhận đặt hàng</h3>
+
+    @if (TempData["Loi"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Loi"]</div>
+    }
+
+    <div class="row">
+        <!-- ===================== FORM THÔNG TIN GIAO HÀNG ===================== -->
+        <div class="col-lg-7 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">Thông tin giao hàng</div>
+                <div class="card-body">
+                    <form asp-controller="DonHang" asp-action="XacNhanDatHang" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ giao hàng</label>
+                            <input type="text" name="DiaChiGiao" class="form-control"
+                                   value="@Model.DiaChiGiao" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại nhận hàng</label>
+                            <input type="text" name="SoDienThoaiNhan" class="form-control"
+                                   value="@Model.SoDienThoaiNhan" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phương thức thanh toán</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PhuongThucThanhToan"
+                                       id="pttCOD" value="COD" checked />
+                                <label class="form-check-label" for="pttCOD">
+                                    Thanh toán khi nhận hàng (COD)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PhuongThucThanhToan"
+                                       id="pttVNPay" value="VNPay" />
+                                <label class="form-check-label" for="pttVNPay">
+                                    Thanh toán qua VNPay
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="PhuongThucThanhToan"
+                                       id="pttMomo" value="Momo" />
+                                <label class="form-check-label" for="pttMomo">
+                                    Thanh toán qua Momo
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú (nếu có)</label>
+                            <textarea name="GhiChu" class="form-control" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger btn-lg w-100">Đặt hàng</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== TÓM TẮT ĐƠN HÀNG ===================== -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">Đơn hàng của bạn</div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var ct in Model.GioHang!.GioHangChiTiet)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>@ct.Xe.TenXe <small class="text-muted">x @ct.SoLuong</small></span>
+                            <span>@((ct.SoLuong * ct.Xe.GiaBan).ToString("N0")) đ</span>
+                        </li>
+                    }
+                </ul>
+                <div class="card-body d-flex justify-content-between">
+                    <strong>Tổng cộng</strong>
+                    <strong class="text-danger">@Model.TongTien.ToString("N0") đ</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

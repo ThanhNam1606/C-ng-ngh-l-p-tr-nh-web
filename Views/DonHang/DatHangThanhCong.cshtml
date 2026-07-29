@@ -1,0 +1,43 @@
+@model BanXePKL_Project.Models.DonHang
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<div class="container my-5 text-center">
+    <div class="mb-4">
+        <span style="font-size:64px;">✅</span>
+    </div>
+    <h3 class="mb-2">Đặt hàng thành công!</h3>
+    <p class="text-muted">Mã đơn hàng: <strong>#@Model.DonHangId</strong></p>
+
+    <div class="card shadow-sm mx-auto mt-4" style="max-width:600px;">
+        <div class="card-body text-start">
+            <p><strong>Ngày đặt:</strong> @Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Địa chỉ giao hàng:</strong> @Model.DiaChiGiao</p>
+            <p><strong>Số điện thoại:</strong> @Model.SoDienThoaiNhan</p>
+            <p><strong>Phương thức thanh toán:</strong> @Model.PhuongThucThanhToan</p>
+            <p><strong>Trạng thái:</strong> <span class="badge bg-warning text-dark">Chờ xác nhận</span></p>
+
+            <hr />
+            <ul class="list-unstyled">
+                @foreach (var ct in Model.ChiTietDonHang)
+                {
+                    <li class="d-flex justify-content-between">
+                        <span>@ct.Xe.TenXe x @ct.SoLuong</span>
+                        <span>@ct.ThanhTien.ToString("N0") đ</span>
+                    </li>
+                }
+            </ul>
+            <hr />
+            <div class="d-flex justify-content-between fw-bold">
+                <span>Tổng cộng</span>
+                <span class="text-danger">@Model.TongTien.ToString("N0") đ</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Xe" asp-action="Index" class="btn btn-outline-dark me-2">Tiếp tục mua sắm</a>
+        <a asp-controller="DonHang" asp-action="LichSu" class="btn btn-danger">Xem lịch sử đơn hàng</a>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.csproj.AssemblyReference.cache
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.GeneratedMSBuildEditorConfig.editorconfig
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.AssemblyInfoInputs.cache
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.AssemblyInfo.cs
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.csproj.CoreCompileInputs.cache
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.MvcApplicationPartsAssemblyInfo.cache
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.RazorAssemblyInfo.cache
+C:\Visual Tim\BanXePKL_Project\obj\Debug\net10.0\BanXePKL.RazorAssemblyInfo.cs

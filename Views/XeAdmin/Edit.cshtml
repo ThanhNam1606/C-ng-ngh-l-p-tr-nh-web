@@ -1,0 +1,91 @@
+@model BanXePKL_Project.Models.XeAdminViewModel
+@{
+    ViewData["Title"] = "Sửa thông tin xe";
+    Layout = "_AdminLayout";
+    var dsHang = ViewBag.DanhSachHangXe as List<BanXePKL_Project.Models.HangXe>;
+    var dsDanhMuc = ViewBag.DanhSachDanhMuc as List<BanXePKL_Project.Models.DanhMuc>;
+}
+
+<h3 class="mb-4">Sửa thông tin xe</h3>
+
+<form asp-action="Edit" asp-route-id="@Model.XeId" method="post" enctype="multipart/form-data" class="card shadow-sm p-4">
+    <input type="hidden" asp-for="XeId" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    @if (!string.IsNullOrEmpty(Model.AnhDaiDienHienTai))
+    {
+        <img src="@Model.AnhDaiDienHienTai" style="width:120px;height:120px;object-fit:cover;" class="rounded mb-3" />
+    }
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Tên xe</label>
+            <input asp-for="TenXe" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Hãng xe</label>
+            <select asp-for="HangXeId" class="form-select">
+                @foreach (var h in dsHang ?? new())
+                {
+                    <option value="@h.HangXeId" selected="@(h.HangXeId == Model.HangXeId)">@h.TenHang</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Danh mục</label>
+            <select asp-for="DanhMucId" class="form-select">
+                @foreach (var d in dsDanhMuc ?? new())
+                {
+                    <option value="@d.DanhMucId" selected="@(d.DanhMucId == Model.DanhMucId)">@d.TenDanhMuc</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Phân khối (cc)</label>
+            <input asp-for="PhanKhoi" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Giá bán (VNĐ)</label>
+            <input asp-for="GiaBan" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Số lượng tồn</label>
+            <input asp-for="SoLuongTon" class="form-control" />
+        </div>
+        <div class="col-md-3 mb-3">
+            <label class="form-label">Năm sản xuất</label>
+            <input asp-for="NamSanXuat" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Màu sắc</label>
+        <input asp-for="MauSac" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Thông số kỹ thuật</label>
+        <textarea asp-for="ThongSoKyThuat" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mô tả</label>
+        <textarea asp-for="MoTa" class="form-control" rows="3"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Đổi ảnh đại diện (để trống nếu giữ nguyên)</label>
+        <input asp-for="AnhDaiDienFile" type="file" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="TrangThai" class="form-check-input" />
+        <label class="form-check-label">Đang bán</label>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Lưu thay đổi</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Huỷ</a>
+</form>

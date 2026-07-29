@@ -1,0 +1,139 @@
+@model BanXePKL_Project.Models.Xe
+@{
+    ViewData["Title"] = Model.TenXe;
+    var xeLienQuan = ViewBag.XeLienQuan as List<BanXePKL_Project.Models.Xe>;
+}
+
+<div class="container my-4">
+
+    <!-- ===================== THÔNG TIN CHÍNH ===================== -->
+    <div class="row">
+        <!-- Hình ảnh -->
+        <div class="col-lg-6 mb-4">
+            <img id="anhChinh" src="@(Model.AnhDaiDien ?? "/images/no-image.png")"
+                 class="img-fluid rounded shadow-sm mb-2" style="width:100%;height:400px;object-fit:cover;"
+                 alt="@Model.TenXe" />
+
+            @if (Model.AnhXe != null && Model.AnhXe.Any())
+            {
+                <div class="d-flex gap-2 flex-wrap">
+                    @foreach (var anh in Model.AnhXe)
+                    {
+                        <img src="@anh.DuongDanAnh" class="rounded border"
+                             style="width:70px;height:70px;object-fit:cover;cursor:pointer;"
+                             onclick="document.getElementById('anhChinh').src='@anh.DuongDanAnh'" />
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Thông tin & đặt mua -->
+        <div class="col-lg-6">
+            <h3>@Model.TenXe</h3>
+            <p class="text-muted">
+                Hãng: <strong>@Model.HangXe?.TenHang</strong> &bull;
+                Danh mục: <strong>@Model.DanhMuc?.TenDanhMuc</strong>
+            </p>
+
+            <h4 class="text-danger fw-bold">@Model.GiaBan.ToString("N0") đ</h4>
+
+            <ul class="list-unstyled mt-3">
+                <li><strong>Phân khối:</strong> @Model.PhanKhoi cc</li>
+                <li><strong>Năm sản xuất:</strong> @Model.NamSanXuat</li>
+                <li><strong>Màu sắc:</strong> @Model.MauSac</li>
+                <li>
+                    <strong>Tình trạng kho:</strong>
+                    @if (Model.SoLuongTon > 0)
+                    {
+                        <span class="text-success">Còn hàng (@Model.SoLuongTon xe)</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">Hết hàng</span>
+                    }
+                </li>
+            </ul>
+
+            <!-- Form thêm vào giỏ hàng (Người 3 sẽ hoàn thiện action xử lý) -->
+            <form asp-controller="GioHang" asp-action="ThemVaoGio" method="post" class="d-flex align-items-center gap-2 mt-3">
+                <input type="hidden" name="xeId" value="@Model.XeId" />
+                <input type="number" name="soLuong" value="1" min="1" max="@Model.SoLuongTon"
+                       class="form-control" style="width:90px;" />
+                <button type="submit" class="btn btn-danger" disabled="@(Model.SoLuongTon <= 0)">
+                    Thêm vào giỏ hàng
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===================== MÔ TẢ & THÔNG SỐ ===================== -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="chiTietTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabMoTa">Mô tả</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabThongSo">Thông số kỹ thuật</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabDanhGia">
+                        Đánh giá (@(Model.DanhGia?.Count ?? 0))
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content border border-top-0 p-4">
+                <div class="tab-pane fade show active" id="tabMoTa">
+                    <p>@Model.MoTa</p>
+                </div>
+                <div class="tab-pane fade" id="tabThongSo">
+                    <p style="white-space:pre-line;">@Model.ThongSoKyThuat</p>
+                </div>
+                <div class="tab-pane fade" id="tabDanhGia">
+                    @if (Model.DanhGia != null && Model.DanhGia.Any())
+                    {
+                        @foreach (var dg in Model.DanhGia.OrderByDescending(d => d.NgayDanhGia))
+                        {
+                            <div class="border-bottom py-2">
+                                <span class="text-warning">@(new string('★', dg.SoSao))@(new string('☆', 5 - dg.SoSao))</span>
+                                <p class="mb-0">@dg.NoiDung</p>
+                                <small class="text-muted">@dg.NgayDanhGia.ToString("dd/MM/yyyy")</small>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">Chưa có đánh giá nào cho xe này.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== XE LIÊN QUAN ===================== -->
+    @if (xeLienQuan != null && xeLienQuan.Any())
+    {
+        <div class="mt-5">
+            <h5 class="mb-3">Xe cùng danh mục</h5>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+                @foreach (var xe in xeLienQuan)
+                {
+                    <div class="col">
+                        <div class="card h-100 shadow-sm">
+                            <img src="@(xe.AnhDaiDien ?? "/images/no-image.png")"
+                                 class="card-img-top" style="height:150px;object-fit:cover;" />
+                            <div class="card-body">
+                                <h6 class="card-title">@xe.TenXe</h6>
+                                <p class="text-danger fw-bold">@xe.GiaBan.ToString("N0") đ</p>
+                                <a asp-action="Details" asp-route-id="@xe.XeId" class="btn btn-sm btn-outline-dark">Xem</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary mt-4">&larr; Quay lại danh sách</a>
+</div>

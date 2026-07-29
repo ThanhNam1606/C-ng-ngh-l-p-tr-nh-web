@@ -1,0 +1,37 @@
+@model BanXePKL_Project.Models.DoiMatKhauViewModel
+@{
+    ViewData["Title"] = "Đổi mật khẩu";
+}
+
+<div class="container my-4" style="max-width:450px;">
+    <h3 class="mb-4">Đổi mật khẩu</h3>
+
+    <form asp-controller="TaiKhoan" asp-action="DoiMatKhau" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu hiện tại</label>
+            <input asp-for="MatKhauCu" class="form-control" />
+            <span asp-validation-for="MatKhauCu" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu mới</label>
+            <input asp-for="MatKhauMoi" class="form-control" />
+            <span asp-validation-for="MatKhauMoi" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Xác nhận mật khẩu mới</label>
+            <input asp-for="XacNhanMatKhauMoi" class="form-control" />
+            <span asp-validation-for="XacNhanMatKhauMoi" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-danger">Đổi mật khẩu</button>
+        <a asp-action="ThongTin" class="btn btn-outline-secondary">Huỷ</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

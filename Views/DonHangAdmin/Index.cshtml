@@ -1,0 +1,58 @@
+@model List<BanXePKL_Project.Models.DonHang>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    Layout = "_AdminLayout";
+
+    string TenTrangThai(string tt) => tt switch
+    {
+        "ChoXacNhan" => "Chờ xác nhận",
+        "DaXacNhan" => "Đã xác nhận",
+        "DangGiao" => "Đang giao",
+        "DaGiao" => "Đã giao",
+        "DaHuy" => "Đã huỷ",
+        _ => tt
+    };
+}
+
+<h3 class="mb-4">Quản lý đơn hàng</h3>
+
+<form method="get" class="mb-3">
+    <select name="trangThai" class="form-select" style="max-width:250px;" onchange="this.form.submit()">
+        <option value="">-- Tất cả trạng thái --</option>
+        <option value="ChoXacNhan" selected="@(ViewBag.TrangThai == "ChoXacNhan")">Chờ xác nhận</option>
+        <option value="DaXacNhan" selected="@(ViewBag.TrangThai == "DaXacNhan")">Đã xác nhận</option>
+        <option value="DangGiao" selected="@(ViewBag.TrangThai == "DangGiao")">Đang giao</option>
+        <option value="DaGiao" selected="@(ViewBag.TrangThai == "DaGiao")">Đã giao</option>
+        <option value="DaHuy" selected="@(ViewBag.TrangThai == "DaHuy")">Đã huỷ</option>
+    </select>
+</form>
+
+<div class="card shadow-sm">
+    <table class="table mb-0 align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Ngày đặt</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var don in Model)
+            {
+                <tr>
+                    <td>#@don.DonHangId</td>
+                    <td>@don.NguoiDung?.HoTen</td>
+                    <td>@don.NgayDat.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="fw-bold text-danger">@don.TongTien.ToString("N0") đ</td>
+                    <td>@TenTrangThai(don.TrangThaiDonHang)</td>
+                    <td>
+                        <a asp-action="ChiTiet" asp-route-id="@don.DonHangId" class="btn btn-sm btn-outline-dark">Xem</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,52 @@
+@model List<BanXePKL_Project.Models.NguoiDung>
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+    Layout = "_AdminLayout";
+}
+
+<h3 class="mb-4">Quản lý khách hàng</h3>
+
+<form method="get" class="mb-3 d-flex gap-2" style="max-width:400px;">
+    <input type="text" name="keyword" class="form-control" placeholder="Tìm theo tên/email..." value="@ViewBag.Keyword" />
+    <button type="submit" class="btn btn-outline-dark">Tìm</button>
+</form>
+
+<div class="card shadow-sm">
+    <table class="table mb-0 align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Họ tên</th><th>Email</th><th>SĐT</th><th>Ngày tạo</th><th>Trạng thái</th><th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var kh in Model)
+            {
+                <tr>
+                    <td>@kh.HoTen</td>
+                    <td>@kh.Email</td>
+                    <td>@kh.SoDienThoai</td>
+                    <td>@kh.NgayTao.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @if (kh.TrangThai)
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Đã khoá</span>
+                        }
+                    </td>
+                    <td>
+                        <form asp-action="KhoaMoKhoa" method="post"
+                              onsubmit="return confirm('Xác nhận thay đổi trạng thái tài khoản này?');">
+                            <input type="hidden" name="userId" value="@kh.UserId" />
+                            <button type="submit" class="btn btn-sm @(kh.TrangThai ? "btn-outline-danger" : "btn-outline-success")">
+                                @(kh.TrangThai ? "Khoá" : "Mở khoá")
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
